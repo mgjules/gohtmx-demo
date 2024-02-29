@@ -5,13 +5,14 @@ import (
 	"github.com/mgjules/gohtmx-demo/task"
 )
 
-templ TaskInputComponent(err string) {
+templ TaskInputComponent(value, err string) {
 	<form id="tasks-form" class="transition-all" hx-post="/tasks" hx-swap="outerHTML">
 		<label class={ "input input-bordered flex items-center gap-2", templ.KV("input-error", err != "") }>
 			<input
 				id="task-input"
 				type="text"
 				name="task"
+				value={ value }
 				required
 				class="grow placeholder-base-content/50"
 				placeholder="Type your task"

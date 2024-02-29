@@ -49,17 +49,20 @@ func handleIndex(manager *task.Manager) http.HandlerFunc {
 
 func handleAddTask(manager *task.Manager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var errMsg string
+		var (
+			errMsg  string
+			content = r.FormValue("task")
+		)
 		defer func() {
 			if errMsg == "" {
 				w.Header().Add("HX-Trigger", "refreshTaskList")
+				content = ""
 			}
-			if err := templates.TaskInputComponent(errMsg).Render(r.Context(), w); err != nil {
+			if err := templates.TaskInputComponent(content, errMsg).Render(r.Context(), w); err != nil {
 				http.Error(w, "Failed to render task input component", http.StatusInternalServerError)
 			}
 		}()
 
-		content := r.FormValue("task")
 		if content == "" {
 			slog.Error("Failed to retrieve task content: empty")
 			errMsg = "Please input a task"
