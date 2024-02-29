@@ -68,7 +68,7 @@ func handleAddTask(manager *task.Manager) http.HandlerFunc {
 
 		if err := manager.Add(content); err != nil {
 			slog.Error("Failed to add task", "error", err)
-			errMsg = "Something went wrong on our side. Please try again later."
+			errMsg = err.Error() + "."
 			return
 		}
 	}

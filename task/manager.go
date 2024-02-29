@@ -33,6 +33,11 @@ func (m *Manager) Add(content string) error {
 	}
 
 	m.mu.Lock()
+	for _, task := range m.tasks {
+		if task.DoneAt.IsZero() && task.Content == content {
+			return errors.New("task already exists")
+		}
+	}
 	m.tasks = append(m.tasks, Task{
 		ID:        uuid.NewV4(),
 		Content:   content,
