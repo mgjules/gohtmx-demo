@@ -33,6 +33,8 @@ func (m *Manager) Add(content string) error {
 	}
 
 	m.mu.Lock()
+	defer m.mu.Unlock()
+
 	for _, task := range m.tasks {
 		if task.DoneAt.IsZero() && task.Content == content {
 			return errors.New("task already exists")
@@ -46,7 +48,6 @@ func (m *Manager) Add(content string) error {
 	if len(m.tasks) > maxTasks {
 		m.tasks = m.tasks[1:]
 	}
-	m.mu.Unlock()
 
 	return nil
 }
@@ -54,6 +55,8 @@ func (m *Manager) Add(content string) error {
 // MarkAsDone marks a new Task as done.
 func (m *Manager) MarkAsDone(id uuid.UUID) error {
 	m.mu.Lock()
+	defer m.mu.Unlock()
+
 	var found bool
 	for i, task := range m.tasks {
 		if task.ID == id {
@@ -62,7 +65,6 @@ func (m *Manager) MarkAsDone(id uuid.UUID) error {
 			break
 		}
 	}
-	m.mu.Unlock()
 	if !found {
 		return errors.New("task not found")
 	}

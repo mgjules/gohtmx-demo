@@ -3,13 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/mgjules/gohtmx-demo/task"
 	"github.com/mgjules/gohtmx-demo/templates"
 	uuid "github.com/satori/go.uuid"
-	"golang.org/x/exp/slog"
 )
 
 func newServer(addr string, manager *task.Manager) (*http.Server, error) {

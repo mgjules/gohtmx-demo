@@ -6,9 +6,11 @@ import (
 )
 
 func initLogger(prod bool) {
-	var handler slog.Handler = slog.NewTextHandler(os.Stdout, nil)
+	var handler slog.Handler = slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+	})
 	if prod {
-		handler = slog.NewJSONHandler(os.Stdout, nil)
+		handler = slog.NewJSONHandler(os.Stderr, nil)
 	}
 
 	logger := slog.New(handler)
