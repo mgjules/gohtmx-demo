@@ -1,0 +1,25 @@
+{
+  "name": "gohtmx-demo",
+  "version": "1.0.0",
+  "description": "A Go + HTMX (sprinkled with Templ) demo",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgjules/gohtmx-demo.git"
+  },
+  "keywords": [
+    "go",
+    "htmx",
+    "templ",
+    "tailwindcss"
+  ],
+  "author": "mgjules",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/mgjules/gohtmx-demo/issues"
+  },
+  "homepage": "https://github.com/mgjules/gohtmx-demo#readme",
+  "devDependencies": {
+    "daisyui": "^4.7.2",
+    "tailwindcss": "^3.4.1"
+  }
+}

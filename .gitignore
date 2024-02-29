@@ -22,3 +22,4 @@ go.work
 
 tmp
 templates/*_templ.txt
+node_modules

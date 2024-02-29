@@ -1,5 +1,17 @@
 package templates
 
-templ Hello(name string) {
-	<div>Hellos, { name }</div>
+templ IndexPage(name string) {
+	<!DOCTYPE html>
+	<html>
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<link href="./assets/dist/app.css" rel="stylesheet"/>
+		</head>
+		<body>
+			<h1 class="text-red-500 text-3xl font-bold underline">
+				Hello { name }!!
+			</h1>
+		</body>
+	</html>
 }

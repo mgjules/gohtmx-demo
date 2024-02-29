@@ -10,6 +10,7 @@ func newServer(addr string) *http.Server {
 
 	// Routes.
 	mux.HandleFunc("GET /", handleIndex)
+	mux.Handle("GET /assets/dist/", http.FileServerFS(assets))
 
 	return &http.Server{
 		Addr:           addr,

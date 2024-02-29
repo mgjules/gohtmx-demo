@@ -2,6 +2,7 @@
 package main
 
 import (
+	"embed"
 	"errors"
 	"flag"
 	"fmt"
@@ -11,6 +12,9 @@ import (
 
 	"github.com/mgjules/gohtmx-demo/templates"
 )
+
+//go:embed assets/dist
+var assets embed.FS
 
 func main() {
 	if err := run(); err != nil {
@@ -37,7 +41,7 @@ func run() error {
 }
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
-	if err := templates.Hello("testing").Render(r.Context(), w); err != nil {
+	if err := templates.IndexPage("friendly people").Render(r.Context(), w); err != nil {
 		http.Error(w, "failed to render Hello template", http.StatusInternalServerError)
 	}
 }
