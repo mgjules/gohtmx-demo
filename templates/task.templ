@@ -1,5 +1,29 @@
 package templates
 
-templ Hello() {
-	<div>hello</div>
+templ TaskInputComponent() {
+	<label class="input input-bordered flex items-center gap-2">
+		<input type="text" class="grow" placeholder="Type your task" maxlength="128"/>
+		<kbd class="kbd kbd-sm">↲</kbd>
+	</label>
+}
+
+templ TaskListComponent() {
+	<div class="flex flex-col gap-y-3">
+		<div class="flex flex-row justify-between items-center bg-base-200 px-4 py-6 rounded-lg border-1 border-base-200 shadow-lg">
+			<span>we use cookies for no reason.</span>
+			<button class="btn btn-outline btn-sm">Done</button>
+		</div>
+		<div class="flex flex-row justify-between items-center bg-base-200 px-4 py-6 rounded-lg border-1 border-base-200 shadow-lg">
+			<span>we use cookies for no reason.</span>
+			<button class="btn btn-outline btn-sm">Done</button>
+		</div>
+		<div class="flex flex-row justify-between items-center bg-base-200 px-4 py-6 rounded-lg border-1 border-base-200 shadow-lg">
+			<span>we use cookies for no reason.</span>
+			<button class="btn btn-outline btn-sm">Done</button>
+		</div>
+		<div class="flex flex-row justify-between items-center bg-base-200 px-4 py-6 rounded-lg border-1 border-base-200 shadow-lg">
+			<span>we use cookies for no reason.</span>
+			<button class="btn btn-outline btn-sm">Done</button>
+		</div>
+	</div>
 }

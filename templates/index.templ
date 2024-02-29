@@ -1,5 +1,9 @@
 package templates
 
+import (
+	"time"
+)
+
 templ IndexPage(name string) {
 	<!DOCTYPE html>
 	<html>
@@ -7,11 +11,22 @@ templ IndexPage(name string) {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<link href="./assets/dist/app.css" rel="stylesheet"/>
+			<title>TaskR</title>
 		</head>
 		<body>
-			<h1 class="text-red-500 text-3xl font-bold underline">
-				Hello { name }!!
-			</h1>
+			<div class="flex flex-col container mx-auto max-w-2xl px-4 py-10 gap-y-6">
+				<div>
+					@TaskInputComponent()
+				</div>
+				<div>
+					@TaskListComponent()
+				</div>
+			</div>
 		</body>
+		<footer class="footer footer-center p-4 text-base-content">
+			<aside>
+				<p>Copyright © { time.Now().Format("2006") } - All right reserved by <a class="link" href="https://github.com/mgjules" target="_blank">mgjules</a></p>
+			</aside>
+		</footer>
 	</html>
 }
