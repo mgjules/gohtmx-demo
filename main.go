@@ -10,7 +10,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/mgjules/gohtmx-demo/templates"
+	"github.com/brianvoe/gofakeit/v7"
+	"github.com/mgjules/gohtmx-demo/task"
 )
 
 //go:embed assets/dist
@@ -30,7 +31,17 @@ func run() error {
 
 	initLogger(*prod)
 
-	server := newServer(*addr)
+	gofakeit.Seed(13337)
+
+	manager := task.NewManager()
+	if err := manager.Seed(3); err != nil {
+		return fmt.Errorf("failed to seed tasks: %v", err)
+	}
+
+	server, err := newServer(*addr, manager)
+	if err != nil {
+		return fmt.Errorf("failed to create new server: %w", err)
+	}
 
 	slog.Info("Server starting...", "Address", "http://"+server.Addr)
 	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
@@ -38,10 +49,4 @@ func run() error {
 	}
 
 	return nil
-}
-
-func handleIndex(w http.ResponseWriter, r *http.Request) {
-	if err := templates.IndexPage("friendly people").Render(r.Context(), w); err != nil {
-		http.Error(w, "failed to render Hello template", http.StatusInternalServerError)
-	}
 }
