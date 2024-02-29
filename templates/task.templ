@@ -1,28 +1,47 @@
 package templates
 
 import (
+	"path"
 	"github.com/mgjules/gohtmx-demo/task"
 )
 
-templ TaskInputComponent() {
-	<form method="POST" action="/tasks">
-		<label class="input input-bordered flex items-center gap-2">
-			<input type="text" name="task" class="grow" placeholder="Type your task" maxlength="128"/>
+templ TaskInputComponent(err string) {
+	<form id="tasks-form" class="transition-all" hx-post="/tasks" hx-swap="outerHTML">
+		<label class={ "input input-bordered flex items-center gap-2", templ.KV("input-error", err != "") }>
+			<input
+				id="task-input"
+				type="text"
+				name="task"
+				required
+				class="grow placeholder-base-content/50"
+				placeholder="Type your task"
+				maxlength="64"
+				hx-swap="focus-scroll:true"
+			/>
 			<kbd class="kbd kbd-sm">↲</kbd>
 		</label>
+		if err != "" {
+			<div class="label">
+				<span class="text-error label-text-alt">{ err }</span>
+			</div>
+		}
 	</form>
 }
 
 templ TaskListComponent(tasks []task.Task) {
-	<div id="tasks" class="flex flex-col gap-y-3">
+	<ul id="tasks-list" class="flex flex-col gap-y-3 transition-all" hx-trigger="refreshTaskList from:body" hx-get="/tasks">
 		for _, task := range tasks {
-			<div
+			<li
 				id={ "task-" + task.ID.String() }
 				class="flex flex-row justify-between items-center bg-base-200 px-4 py-6 rounded-lg border-1 border-base-200 shadow-lg"
 			>
-				<span>{ task.Content }</span>
-				<button class="btn btn-outline btn-sm">Done</button>
-			</div>
+				<div class="flex-nowrap break-words">{ task.Content }</div>
+				<button
+					class="btn btn-outline btn-sm"
+					hx-post={ path.Join("/tasks", task.ID.String(), "/done") }
+					hx-confirm="Are you sure you are done with this task?"
+				>Done</button>
+			</li>
 		}
-	</div>
+	</ul>
 }

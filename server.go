@@ -49,24 +49,28 @@ func handleIndex(manager *task.Manager) http.HandlerFunc {
 
 func handleAddTask(manager *task.Manager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		var errMsg string
+		defer func() {
+			if errMsg == "" {
+				w.Header().Add("HX-Trigger", "refreshTaskList")
+			}
+			if err := templates.TaskInputComponent(errMsg).Render(r.Context(), w); err != nil {
+				http.Error(w, "Failed to render task input component", http.StatusInternalServerError)
+			}
+		}()
+
 		content := r.FormValue("task")
 		if content == "" {
 			slog.Error("Failed to retrieve task content: empty")
-			http.Error(w, "Missing task content", http.StatusBadRequest)
+			errMsg = "Please input a task"
 			return
 		}
 
 		if err := manager.Add(content); err != nil {
 			slog.Error("Failed to add task", "error", err)
-			http.Error(w, "Failed to add task", http.StatusBadRequest)
+			errMsg = "Something went wrong on our side. Please try again later."
 			return
 		}
-
-		// if err := templates.TaskInputComponent().Render(r.Context(), w); err != nil {
-		// 	http.Error(w, "Failed to render task input component", http.StatusInternalServerError)
-		// }
-
-		http.Redirect(w, r, "/", http.StatusFound)
 	}
 }
 
@@ -93,5 +97,8 @@ func handleMarkTaskAsDone(manager *task.Manager) http.HandlerFunc {
 			http.Error(w, fmt.Sprintf("Failed to mark task %q as done", id.String()), http.StatusInternalServerError)
 			return
 		}
+
+		w.Header().Add("HX-Trigger", "refreshTaskList")
+		w.WriteHeader(http.StatusNoContent)
 	}
 }

@@ -2,6 +2,7 @@ package task
 
 import (
 	"errors"
+	"slices"
 	"sync"
 	"time"
 
@@ -9,6 +10,8 @@ import (
 	"github.com/samber/lo"
 	uuid "github.com/satori/go.uuid"
 )
+
+const maxTasks = 10
 
 // Manager allows us to operate on tasks.
 type Manager struct {
@@ -35,6 +38,9 @@ func (m *Manager) Add(content string) error {
 		Content:   content,
 		CreatedAt: time.Now().UTC(),
 	})
+	if len(m.tasks) > maxTasks {
+		m.tasks = m.tasks[1:]
+	}
 	m.mu.Unlock()
 
 	return nil
@@ -64,9 +70,19 @@ func (m *Manager) List() []Task {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
-	return lo.Filter(m.tasks, func(task Task, _ int) bool {
+	filtered := lo.Filter(m.tasks, func(task Task, _ int) bool {
 		return task.DoneAt.IsZero()
 	})
+
+	slices.SortFunc(filtered, func(a, b Task) int {
+		if a.CreatedAt.Before(b.CreatedAt) {
+			return 1
+		}
+
+		return -1
+	})
+
+	return filtered
 }
 
 // Seed adds number num of random tasks.
