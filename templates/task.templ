@@ -14,7 +14,10 @@ templ TaskInputComponent() {
 templ TaskListComponent(tasks []task.Task) {
 	<div id="tasks" class="flex flex-col gap-y-3">
 		for _, task := range tasks {
-			<div id={ "task-" + task.ID.String() } class="flex flex-row justify-between items-center bg-base-200 px-4 py-6 rounded-lg border-1 border-base-200 shadow-lg">
+			<div
+				id={ "task-" + task.ID.String() }
+				class="flex flex-row justify-between items-center bg-base-200 px-4 py-6 rounded-lg border-1 border-base-200 shadow-lg"
+			>
 				<span>{ task.Content }</span>
 				<button class="btn btn-outline btn-sm">Done</button>
 			</div>
