@@ -62,9 +62,11 @@ func handleAddTask(manager *task.Manager) http.HandlerFunc {
 			return
 		}
 
-		if err := templates.TaskInputComponent().Render(r.Context(), w); err != nil {
-			http.Error(w, "Failed to render task input component", http.StatusInternalServerError)
-		}
+		// if err := templates.TaskInputComponent().Render(r.Context(), w); err != nil {
+		// 	http.Error(w, "Failed to render task input component", http.StatusInternalServerError)
+		// }
+
+		http.Redirect(w, r, "/", http.StatusFound)
 	}
 }
 

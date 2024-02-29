@@ -5,10 +5,12 @@ import (
 )
 
 templ TaskInputComponent() {
-	<label class="input input-bordered flex items-center gap-2">
-		<input type="text" name="task" class="grow" placeholder="Type your task" maxlength="128"/>
-		<kbd class="kbd kbd-sm">↲</kbd>
-	</label>
+	<form method="POST" action="/tasks">
+		<label class="input input-bordered flex items-center gap-2">
+			<input type="text" name="task" class="grow" placeholder="Type your task" maxlength="128"/>
+			<kbd class="kbd kbd-sm">↲</kbd>
+		</label>
+	</form>
 }
 
 templ TaskListComponent(tasks []task.Task) {
