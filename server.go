@@ -41,6 +41,7 @@ func newServer(addr string, manager *task.Manager) (*http.Server, error) {
 
 func handleIndex(manager *task.Manager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html")
 		if err := templates.IndexPage(manager.List()).Render(r.Context(), w); err != nil {
 			http.Error(w, "Failed to render index page", http.StatusInternalServerError)
 		}
@@ -56,7 +57,7 @@ func handleAddTask(manager *task.Manager) http.HandlerFunc {
 			task    *task.Task
 		)
 		defer func() {
-			w.Header().Add("Content-Type", "text/html")
+			w.Header().Set("Content-Type", "text/html")
 			if errMsg == "" && task != nil {
 				if err := templates.TaskWrappedItemComponent(*task).Render(r.Context(), w); err != nil {
 					slog.Error("Failed to render task", "error", err)
@@ -85,7 +86,7 @@ func handleAddTask(manager *task.Manager) http.HandlerFunc {
 
 func handleListTask(manager *task.Manager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "text/html")
+		w.Header().Set("Content-Type", "text/html")
 		if err := templates.TaskListComponent(manager.List()).Render(r.Context(), w); err != nil {
 			http.Error(w, "Failed to render task list component", http.StatusInternalServerError)
 		}
