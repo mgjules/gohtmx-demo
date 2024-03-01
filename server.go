@@ -26,7 +26,7 @@ func newServer(addr string, manager *task.Manager) (*http.Server, error) {
 	mux.HandleFunc("GET /", handleIndex(manager))
 	mux.HandleFunc("GET /tasks", handleListTask(manager))
 	mux.HandleFunc("POST /tasks", handleAddTask(manager))
-	mux.HandleFunc("POST /tasks/{id}/done", handleMarkTaskAsDone(manager))
+	mux.HandleFunc("DELETE /tasks/{id}/done", handleMarkTaskAsDone(manager))
 	mux.Handle("GET /assets/dist/", http.FileServerFS(assets))
 
 	return &http.Server{
@@ -50,15 +50,21 @@ func handleIndex(manager *task.Manager) http.HandlerFunc {
 func handleAddTask(manager *task.Manager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var (
+			err     error
 			errMsg  string
 			content = r.FormValue("task")
+			task    *task.Task
 		)
 		defer func() {
-			if errMsg == "" {
-				w.Header().Add("HX-Trigger", "refreshTaskList")
-				content = ""
+			w.Header().Add("Content-Type", "text/html")
+			if errMsg == "" && task != nil {
+				if err := templates.TaskWrappedItemComponent(*task).Render(r.Context(), w); err != nil {
+					slog.Error("Failed to render task", "error", err)
+					errMsg = "Failed to render task." + err.Error() + "."
+				}
 			}
 			if err := templates.TaskInputComponent(content, errMsg).Render(r.Context(), w); err != nil {
+				slog.Error("Failed to add task", "error", err)
 				http.Error(w, "Failed to render task input component", http.StatusInternalServerError)
 			}
 		}()
@@ -69,7 +75,7 @@ func handleAddTask(manager *task.Manager) http.HandlerFunc {
 			return
 		}
 
-		if err := manager.Add(content); err != nil {
+		if task, err = manager.Add(content); err != nil {
 			slog.Error("Failed to add task", "error", err)
 			errMsg = err.Error() + "."
 			return
@@ -79,6 +85,7 @@ func handleAddTask(manager *task.Manager) http.HandlerFunc {
 
 func handleListTask(manager *task.Manager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "text/html")
 		if err := templates.TaskListComponent(manager.List()).Render(r.Context(), w); err != nil {
 			http.Error(w, "Failed to render task list component", http.StatusInternalServerError)
 		}
@@ -101,7 +108,6 @@ func handleMarkTaskAsDone(manager *task.Manager) http.HandlerFunc {
 			return
 		}
 
-		w.Header().Add("HX-Trigger", "refreshTaskList")
-		w.WriteHeader(http.StatusNoContent)
+		w.WriteHeader(http.StatusOK)
 	}
 }

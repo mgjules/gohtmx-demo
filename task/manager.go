@@ -27,9 +27,9 @@ func NewManager() *Manager {
 }
 
 // Add adds a new Task.
-func (m *Manager) Add(content string) error {
+func (m *Manager) Add(content string) (*Task, error) {
 	if content == "" {
-		return errors.New("task content cannot be empty")
+		return nil, errors.New("task content cannot be empty")
 	}
 
 	m.mu.Lock()
@@ -37,19 +37,20 @@ func (m *Manager) Add(content string) error {
 
 	for _, task := range m.tasks {
 		if task.DoneAt.IsZero() && task.Content == content {
-			return errors.New("task already exists")
+			return nil, errors.New("task already exists")
 		}
 	}
-	m.tasks = append(m.tasks, Task{
+	task := Task{
 		ID:        uuid.NewV4(),
 		Content:   content,
 		CreatedAt: time.Now().UTC(),
-	})
+	}
+	m.tasks = append(m.tasks, task)
 	if len(m.tasks) > maxTasks {
 		m.tasks = m.tasks[1:]
 	}
 
-	return nil
+	return &task, nil
 }
 
 // MarkAsDone marks a new Task as done.
@@ -95,7 +96,7 @@ func (m *Manager) List() []Task {
 // Seed adds number num of random tasks.
 func (m *Manager) Seed(num uint8) error {
 	for range num {
-		if err := m.Add(gofakeit.SentenceSimple()); err != nil {
+		if _, err := m.Add(gofakeit.SentenceSimple()); err != nil {
 			return err
 		}
 	}

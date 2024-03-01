@@ -12,7 +12,9 @@ templ TaskInputComponent(value, err string) {
 				id="task-input"
 				type="text"
 				name="task"
-				value={ value }
+				if err != "" {
+					value={ value }
+				}
 				required
 				class="grow placeholder-base-content/50"
 				placeholder="Type your task"
@@ -32,17 +34,29 @@ templ TaskInputComponent(value, err string) {
 templ TaskListComponent(tasks []task.Task) {
 	<ul id="tasks-list" class="flex flex-col gap-y-3 transition-all" hx-trigger="refreshTaskList from:body" hx-get="/tasks">
 		for _, task := range tasks {
-			<li
-				id={ "task-" + task.ID.String() }
-				class="flex flex-row justify-between items-center bg-base-200 px-4 py-6 rounded-lg border-1 border-base-200 shadow-lg"
-			>
-				<div class="flex-nowrap break-words">{ task.Content }</div>
-				<button
-					class="btn btn-outline btn-sm"
-					hx-post={ path.Join("/tasks", task.ID.String(), "/done") }
-					hx-confirm="Are you sure you are done with this task?"
-				>Done</button>
-			</li>
+			@TaskItemComponent(task)
 		}
 	</ul>
+}
+
+templ TaskWrappedItemComponent(task task.Task) {
+	<div hx-swap-oob="afterbegin:#tasks-list">
+		@TaskItemComponent(task)
+	</div>
+}
+
+templ TaskItemComponent(task task.Task) {
+	<li
+		id={ "task-" + task.ID.String() }
+		class="flex flex-row justify-between items-center bg-base-200 px-4 py-6 rounded-lg border-1 border-base-200 shadow-lg"
+	>
+		<div class="flex-nowrap break-words">{ task.Content }</div>
+		<button
+			class="btn btn-outline btn-sm"
+			hx-target={ "#task-" + task.ID.String() }
+			hx-swap="outerHTML"
+			hx-delete={ path.Join("/tasks", task.ID.String(), "/done") }
+			hx-confirm="Are you sure you are done with this task?"
+		>Done</button>
+	</li>
 }
