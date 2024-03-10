@@ -7,28 +7,39 @@ import (
 
 templ IndexPage(tasks []task.Task) {
 	<!DOCTYPE html>
-	<html>
+	<html lang="en" data-theme="dracula">
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<link href="./assets/dist/app.css" rel="stylesheet"/>
 			<script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+			<!-- HTMX Plugins -->
+			<script src="https://unpkg.com/htmx.org/dist/ext/remove-me.js"></script>
+			<script src="https://unpkg.com/htmx.org/dist/ext/loading-states.js"></script>
+			<script src="https://unpkg.com/htmx.org/dist/ext/class-tools.js"></script>
+			<script src="https://unpkg.com/htmx.org/dist/ext/alpine-morph.js"></script>
+			<!-- Alpine Plugins -->
+			<script defer src="https://unpkg.com/@alpinejs/morph@3.x.x/dist/cdn.min.js"></script>
+			<!-- Alpine Core -->
+			<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 			<title>TaskR - Just another fancy todo app</title>
 		</head>
-		<body>
-			<div class="flex flex-col container mx-auto max-w-2xl px-4 py-10 gap-y-6">
-				<div>
-					@TaskInputComponent("", "")
+		<body hx-ext="remove-me,loading-states,class-tools,alpine-morph">
+			<div class="bg-base-100 h-screen">
+				<div class="flex flex-col container mx-auto max-w-2xl px-4 py-10 gap-y-6">
+					<div>
+						@TaskInputComponent("", "")
+					</div>
+					<div>
+						@TaskListComponent(tasks)
+					</div>
 				</div>
-				<div>
-					@TaskListComponent(tasks)
-				</div>
+				<footer class="footer footer-center p-4 text-base-content">
+					<aside>
+						<p>Copyright © { time.Now().Format("2006") } - All right reserved.</p>
+					</aside>
+				</footer>
 			</div>
 		</body>
-		<footer class="footer footer-center p-4 text-base-content">
-			<aside>
-				<p>Copyright © { time.Now().Format("2006") } - All right reserved.</p>
-			</aside>
-		</footer>
 	</html>
 }

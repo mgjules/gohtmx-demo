@@ -34,7 +34,7 @@ func run() error {
 	gofakeit.Seed(13337)
 
 	manager := task.NewManager()
-	if err := manager.Seed(3); err != nil {
+	if err := manager.Seed(5); err != nil {
 		return fmt.Errorf("failed to seed tasks: %v", err)
 	}
 

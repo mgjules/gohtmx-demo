@@ -63,6 +63,7 @@ func handleAddTask(manager *task.Manager) http.HandlerFunc {
 					slog.Error("Failed to render task", "error", err)
 					errMsg = "Failed to render task." + err.Error() + "."
 				}
+				content = ""
 			}
 			if err := templates.TaskInputComponent(content, errMsg).Render(r.Context(), w); err != nil {
 				slog.Error("Failed to add task", "error", err)

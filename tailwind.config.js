@@ -17,5 +17,8 @@ module.exports = {
     extend: {},
   },
   plugins: [capitalizeFirst, require("daisyui")],
+  daisyui: {
+    themes: ["dracula"],
+  },
 }
 
