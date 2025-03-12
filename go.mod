@@ -1,9 +1,11 @@
 module github.com/mgjules/gohtmx-demo
 
-go 1.22.0
+go 1.23
+
+toolchain go1.23.7
 
 require (
-	github.com/a-h/templ v0.2.543
+	github.com/a-h/templ v0.3.833
 	github.com/brianvoe/gofakeit/v7 v7.0.2
 	github.com/samber/lo v1.39.0
 	github.com/satori/go.uuid v1.2.0
