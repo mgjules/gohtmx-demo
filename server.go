@@ -43,6 +43,7 @@ func handleIndex(manager *task.Manager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		if err := templates.IndexPage(manager.List()).Render(r.Context(), w); err != nil {
+			slog.Error("Failed to render index page", "error", err)
 			http.Error(w, "Failed to render index page", http.StatusInternalServerError)
 		}
 	}
@@ -89,6 +90,7 @@ func handleListTask(manager *task.Manager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		if err := templates.TaskListComponent(manager.List()).Render(r.Context(), w); err != nil {
+			slog.Error("Failed to render task list component", "error", err)
 			http.Error(w, "Failed to render task list component", http.StatusInternalServerError)
 		}
 	}
